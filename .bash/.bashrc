@@ -73,5 +73,6 @@ esac
 
 [ -f ~/.bashrc_$HOSTNAME ] && . ~/.bashrc_$HOSTNAME
 
+alias tmux="TERM=screen-256color-bce tmux"
 
 
