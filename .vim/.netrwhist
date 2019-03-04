@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/Users/arthur'
+let g:netrw_dirhist_2='/Users/arthur/Documents/Uni/Masterarbeit/adaptive-style-transfer'
+let g:netrw_dirhist_3='/Users/arthur/Documents/Uni/Masterarbeit/adaptive-style-transfer/.git'
+let g:netrw_dirhist_4='/Users/arthur/.vim'
+let g:netrw_dirhist_5='/Users/arthur/vim'
