@@ -1,78 +1,174 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# .bashrc
+export CLICOLOR=1
 
-# If not running interactively, don't do anything:
-[ -z "$PS1" ] && return
+# User specific aliases and functions
+alias ..='cd ..'
 
-# don't put duplicate lines in the history. See bash(1) for more options
-export HISTCONTROL=ignoredups
+alias ls='ls -h -G --color'
+alias lx='ls -lXB'         #  Sort by extension.
+alias lk='ls -lSr'         #  Sort by size, biggest last.
+alias lt='ls -ltr'         #  Sort by date, most recent last.
+alias lc='ls -ltcr'        #  Sort by/show change time,most recent last.
+alias lu='ls -ltur'        #  Sort by/show access time,most recent last.
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
+# The ubiquitous 'll': directories first, with alphanumeric sorting:
+alias ll="ls -lv"
+alias lm='ll |more'        #  Pipe through 'more'
+alias lr='ll -R'           #  Recursive ls.
+alias la='ll -A --color'           #  Show hidden files.
+alias tree='tree -Csuh'    #  Nice alternative to 'recursive ls' ...
 
-# enable color support of ls and also add handy aliases
-#if [ "$TERM" != "dumb" ]; then
-    #eval "`dircolors -b`"
-    #alias ls='ls --color=auto'
-    #alias dir='ls --color=auto --format=vertical'
-    #alias vdir='ls --color=auto --format=long'
-#fi
 
-#color support for ls
-alias ls='ls --color'
-LS_COLORS='di=1:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=31:mi=0:ex=35:*.rpm=90'
-export LS_COLORS
+# added by Anaconda2 installer
+export PATH="/export/home/aheimbre/anaconda2/bin:$PATH"
 
-[ -f "/opt/csw/bin/gls" ] && alias ls='/opt/csw/bin/gls --color=auto'
-if [ -f "/opt/csw/bin/gdircolors" ] ; then
- eval "`/opt/csw/bin/gdircolors 2>/dev/null`"
+# Source global definitions
+#export WORKON_HOME=$HOME/.virtualenvs
+#export PROJECT_HOME=$HOME/projects
+#export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
+#source /usr/local/bin/virtualenvwrapper.sh
+source ~/vim/git-completion.bash
+
+#--------------------------------------------------------------
+#  Automatic setting of $DISPLAY (if not set already).
+#  This works for me - your mileage may vary. . . .
+#  The problem is that different types of terminals give
+#+ different answers to 'who am i' (rxvt in particular can be
+#+ troublesome) - however this code seems to work in a majority
+#+ of cases.
+#--------------------------------------------------------------
+
+function get_xserver ()
+{
+    case $TERM in
+        xterm )
+            XSERVER=$(who am i | awk '{print $NF}' | tr -d ')''(' )
+            # Ane-Pieter Wieringa suggests the following alternative:
+            #  I_AM=$(who am i)
+            #  SERVER=${I_AM#*(}
+            #  SERVER=${SERVER%*)}
+            XSERVER=${XSERVER%%:*}
+            ;;
+            aterm | rxvt)
+            # Find some code that works here. ...
+            ;;
+    esac
+}
+
+if [ -z ${DISPLAY:=""} ]; then
+    get_xserver
+    if [[ -z ${XSERVER}  || ${XSERVER} == $(hostname) ||
+       ${XSERVER} == "unix" ]]; then
+          DISPLAY=":0.0"          # Display on local host.
+    else
+       DISPLAY=${XSERVER}:0.0     # Display on remote host.
+    fi
+fi
+
+export DISPLAY
+
+
+#-------------------------------------------------------------
+# Greeting, motd etc. ...
+#-------------------------------------------------------------
+
+# Color definitions (taken from Color Bash Prompt HowTo).
+# Some colors might look different of some terminals.
+# For example, I see 'Bold Red' as 'orange' on my screen,
+# hence the 'Green' 'BRed' 'Red' sequence I often use in my prompt.
+
+
+# Normal Colors
+Black='\033[0;30m'        # Black
+Red='\033[0;31m'          # Red
+Green='\033[0;32m'        # Green
+Yellow='\033[0;33m'       # Yellow
+Blue='\033[0;34m'         # Blue
+Purple='\033[0;35m'       # Purple
+Cyan='\033[0;36m'         # Cyan
+White='\033[0;37m'        # White
+
+# Bold
+BBlack='\033[1;30m'       # Black
+BRed='\033[1;31m'         # Red
+BGreen='\033[1;32m'       # Green
+BYellow='\033[1;33m'      # Yellow
+BBlue='\033[1;34m'        # Blue
+BPurple='\033[1;35m'      # Purple
+BCyan='\033[1;36m'        # Cyan
+BWhite='\033[1;37m'       # White
+
+# Background
+On_Black='\033[40m'       # Black
+On_Red='\033[41m'         # Red
+On_Green='\033[42m'       # Green
+On_Yellow='\033[43m'      # Yellow
+On_Blue='\033[44m'        # Blue
+On_Purple='\033[45m'      # Purple
+On_Cyan='\033[46m'        # Cyan
+On_White='\033[47m'       # White
+
+NC="\033[m"               # Color Reset
+
+
+ALERT=${BWhite}${On_Red} # Bold White on red background
+
+
+
+echo -e "${BCyan}This is BASH ${BRed}${BASH_VERSION%.*}${BCyan}\
+- DISPLAY on ${BRed}$DISPLAY${NC}\n"
+date
+if [ -x /usr/games/fortune ]; then
+    /usr/games/fortune -s     # Makes our day a bit more fun.... :-)
+fi
+
+
+# Current Format: [TIME USER@HOST PWD]
+# TIME:
+#    Green     == machine load is low
+#    Orange    == machine load is medium
+#    Red       == machine load is high
+#    ALERT     == machine load is very high
+# USER:
+#    Cyan      == normal user
+#    Orange    == SU to user
+#    Red       == root
+# HOST:
+#    Cyan      == local session
+#    Green     == secured remote connection (via ssh)
+#    Red       == unsecured remote connection
+#
+#    Command is added to the history file each time you hit enter,
+#    so it's available to all shells (using 'history -a').
+
+
+# Test connection type:
+if [ -n "${SSH_CONNECTION}" ]; then
+    CNX=${Green}        # Connected on remote machine, via ssh (good).
+elif [[ "${DISPLAY%%:0*}" != "" ]]; then
+    CNX=${ALERT}        # Connected on remote machine, not via ssh (bad).
 else
- eval "`dircolors 2>/dev/null`"
+    CNX=${Cyan}        # Connected on local machine.
 fi
 
-UNAME=`uname`
-if [ "-$UNAME" == ".Linux" ] ; then
-    alias ls='ls --color=auto'
+# Test user type:
+if [[ ${USER} == "root" ]]; then
+    SU=${Red}           # User is root.
+elif [[ ${USER} != $(logname) ]]; then
+    SU=${BRed}          # User is not login user.
+else
+    SU=${BYellow}         # User is normal (well ... most of us are).
 fi
 
-# some more ls aliases
-alias ll='ls -al'
-alias la='ls -A'
-alias l='ls -CF'
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-xterm-color)
-    PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-    ;;
-*)
-    PS1='\u@\h:\w\$ '
-    ;;
-esac
-
-# Comment in the above and uncomment this below for a color prompt
-#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;35m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-    ;;
-*)
-    ;;
-esac
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profiles
-# sources /etc/bash.bashrc).
-#if [ -f /etc/bash_completion ]; then
-#    . /etc/bash_completion
-#fi
-
-[ -f ~/.bashrc_$HOSTNAME ] && . ~/.bashrc_$HOSTNAME
-
-alias tmux="TERM=screen-256color-bce tmux"
+# Now we construct the prompt.
+PROMPT_COMMAND="history -a"
+export PS1="\[${SU}\]\u\[\033[m\]@\[${CNX}\]\h:\[${Blue}\]\w\[\033[m\]\$ "
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+#alias ls='ls -GFh'
 
 
+export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
+export HISTIGNORE="&:bg:fg:ll:h:ls"
+export HISTTIMEFORMAT="$(echo -e ${BCyan})[%d/%m %H:%M:%S]$(echo -e ${NC}) "
+export HISTCONTROL=ignoredups
