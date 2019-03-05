@@ -1,0 +1,42 @@
+# map prefix to 'C-j'
+set-option -g prefix C-b
+bind-key C-b send-prefix
+set-option -g prefix2 C-j
+bind-key C-j send-prefix -2
+
+# split panes using | and -
+bind | split-window -h
+bind - split-window -v
+
+# reload config file (change file location to your the tmux.conf you want to use)
+bind r source-file ~/.tmux.conf
+
+# switch panes using Alt-arrow without prefix
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+bind-key h select-pane -L
+bind-key j select-pane -D
+bind-key k select-pane -U
+bind-key l select-pane -R
+
+# Enable mouse mode (tmux 2.1 and above)
+set -g mouse on
+
+# vi is good
+setw -g mode-keys vi
+
+# Setup 'v' to begin selection as in Vim
+bind-key -T vi-copy 'v' begin-selection
+bind-key -T vi-copy 'y' copy-selection
+
+#highlight active pane
+#set -g pane-active-border-bg colour51
+set-option -g pane-active-border-style "bg=default"
+set-option -ag pane-active-border-style "fg=colour51"
+
+# set inactive/active window styles
+set -g window-style 'fg=colour247,bg=colour236'
+set -g window-active-style 'fg=colour250,bg=black'
