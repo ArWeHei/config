@@ -49,6 +49,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'powerline/powerline'
 Plug 'tpope/vim-fugitive'
 Plug 'rbong/vim-flog'
+Plug 'davidhalter/jedi-vim'
+Plug 'ervandew/supertab'
+Plug 'majutsushi/tagbar' 
 call plug#end()
 
 let g:airline_theme='solarized'
@@ -94,3 +97,6 @@ nmap <leader>gm :Gcommit --amend<cr>
 nmap <leader>gp :Gpush<cr>
 nmap <leader>gd :Gdiff<cr>
 nmap <leader>gw :Gwrite<cr>
+
+" Tagbar
+nmap <leader>T :TagbarToggle<CR>
