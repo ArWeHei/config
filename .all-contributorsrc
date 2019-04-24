@@ -1,0 +1,23 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "ArWeHei",
+      "name": "ArWeHei",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/46443020?v=4",
+      "profile": "https://github.com/ArWeHei",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "config",
+  "projectOwner": "ArWeHei",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
